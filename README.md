@@ -3,12 +3,12 @@
 PopMelodyGen is a **copyright-safe symbolic pop melody synthesis toolkit**.
 
 ## Main Features
-- 🎵 Fully copyright-safe data synthesis pipeline
-- 🎛️ Fine-grained conditional control (key/mode, tempo, harmony, vocal register, structure.)
-- 📊 Aesthetic-score–based supervised for higher-quality training data
-- 🎹 REMI-based music tokenizer
-- 🧠 Decoder-only Transformer architecture
-- 🌐 Easy-to-deploy web demo interface
+- 🎵 **Fully copyright-safe data generation pipeline**  
+- 🎛️ **Fine-grained conditional control** over tempo, key/mode, harmony, vocal register, structure
+- 📊 **Aesthetic scoring** for emphasizing higher-quality melody during training
+- 🎹 **REMI-based music tokenizer** for symbolic music encoding  
+- 🧠 **Decoder-only Transformer architecture** for melody generation  
+- 🌐 **Easy-to-deploy web demo interface** for interactive melody generation
 
 ## Release
 This early release open-sources **Step 01–03 only**:

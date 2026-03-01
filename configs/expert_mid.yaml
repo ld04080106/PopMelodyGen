@@ -1,0 +1,10 @@
+seed: 47
+
+out_dir: _dataset
+
+n_songs: 300
+
+tempo: "MID"
+
+start_id: 30000
+

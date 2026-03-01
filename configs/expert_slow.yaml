@@ -1,0 +1,9 @@
+seed: 47
+
+out_dir: _dataset
+
+n_songs: 300
+
+tempo: "SLOW"
+
+start_id: 0

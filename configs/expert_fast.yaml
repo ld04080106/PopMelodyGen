@@ -1,0 +1,10 @@
+seed: 47
+
+out_dir: _dataset
+
+n_songs: 300
+
+tempo: "FAST"
+
+start_id: 60000
+

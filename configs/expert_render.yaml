@@ -1,1 +1,14 @@
+fluidsynth_bin: fluidsynth
 
+path_sf2: /path/to/PopMelodyGen/render/sf2/FluidR3_GM.sf2
+
+in_dir: _dataset
+
+out_dir: _dataset
+
+sample_rate: 48000
+gain: 0.8
+disable_reverb: True
+disable_chorus: True
+normalize: True
+target_peak: 0.98

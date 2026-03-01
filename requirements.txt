@@ -1,0 +1,8 @@
+numpy
+pretty_midi
+pyyaml
+scipy
+librosa
+muq
+hydra-core
+tensorboard

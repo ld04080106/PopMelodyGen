@@ -30,7 +30,7 @@ Outputs:
 - `.json` metadata files
 
 ### ✅ Step 02 — MIDI → Audio Rendering
-Render MIDI to WAV using **FluidSynth** + **SoundFont (.sf2)** for step 03.
+Render MIDI to WAVE using **FluidSynth** + **SoundFont (.sf2)** for step 03.
 
 Outputs:
 - `.wav` WAVE files
@@ -101,7 +101,7 @@ python 01_batch_expert_syn.py --config configs/expert_fast.yaml
 * fluidsynth_bin: path to fluidsynth executable
 * path_sf2: path to your .sf2 file
 * in_dir: directory of MIDI outputs from Step 01
-* out_dir: output directory for WAV files
+* out_dir: output directory for WAVE files
 
 2. Run:
 
@@ -129,6 +129,7 @@ This script calls `SongEval/eval.py` internally and writes batch scores for all 
 ---
 
 **🧩 Planned Release (After ACL Demo)**
+
 🚧 The following components are not included in this early release:
 
 * Step 04: preprocessing (meta.jsonl, train/val/test split)
@@ -141,7 +142,7 @@ This script calls `SongEval/eval.py` internally and writes batch scores for all 
 **📜 License**
 
 * Code in this repository: MIT
-* Third-party: SongEval follows its own license (see [`SongEval`](https://github.com/ASLP-lab/SongEval)).
+* Third-party: [FluidSynth](https://www.fluidsynth.org/), [FluidR3_GM.sf2](https://member.keymusician.com/Member/FluidR3_GM/), [SongEval ](https://github.com/ASLP-lab/SongEval)).
 
 ---
 

@@ -1,0 +1,9 @@
+path_meta: _preprocessed_synth_100k/meta.jsonl
+out_dir: _ckpt_synth_base_100k
+
+max_len: 1300
+batch_size: 4
+grad_accum_steps: 4
+lr: 3e-4
+epochs: 20
+seed: 47

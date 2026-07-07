@@ -1,15 +1,3 @@
----
-title: PopMelodyGen
-emoji: 🎵
-colorFrom: blue
-colorTo: indigo
-sdk: gradio
-sdk_version: "5.35.0"
-python_version: "3.11"
-app_file: app.py
-pinned: false
----
-
 # PopMelodyGen
 
 PopMelodyGen is a reproducible system for controllable symbolic pop-melody generation.

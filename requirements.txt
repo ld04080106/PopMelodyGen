@@ -1,0 +1,7 @@
+gradio
+numpy
+pretty_midi
+PyYAML
+tensorboard
+torch
+tqdm

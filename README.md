@@ -10,7 +10,6 @@ This GitHub release focuses on the synthetic-data pipeline and demo:
 - `02_preprocess_synthetic_data.py`: tokenize synthetic data and create train/eval/test splits
 - `03_train_synth_base.py`: train or resume the synthetic-pretrained Transformer
 - `08_launch_demo.py`: launch the interactive demo with Expert, Synth-Base, and Real-FT systems
-- `app.py`: Hugging Face Spaces entry point for the same demo
 
 The RWC real-pop processing, finetuning, generation/evaluation scripts, and paper
 experiment utilities are intentionally not part of this initial code release. They

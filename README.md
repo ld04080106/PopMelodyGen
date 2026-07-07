@@ -4,7 +4,7 @@ PopMelodyGen is a reproducible system for controllable symbolic pop-melody gener
 It combines a rule-based expert synthesizer, synthetic-data pretraining, and an
 interactive Gradio demo for melody generation, playback, and MIDI export.
 
-This public release focuses on the synthetic-data pipeline and demo:
+This GitHub release focuses on the synthetic-data pipeline and demo:
 
 - `01_generate_synthetic_data.py`: generate synthetic melody MIDI and metadata
 - `02_preprocess_synthetic_data.py`: tokenize synthetic data and create train/eval/test splits
@@ -19,16 +19,10 @@ will be released after paper acceptance.
 ## Features
 
 - Rule-based symbolic pop-melody synthesis
-- Explicit musical controls:
-  - tempo class
-  - key and mode
-  - vocal register
-  - song structure
-  - chord progression
+- Explicit musical controls: tempo class, key/mode, vocal register, song structure, and chord progression
 - MIDI plus JSON metadata export
 - Event-based tokenizer for symbolic melody modeling
 - Decoder-only Transformer training
-- Optional checkpoint initialization and resume training
 - Interactive Gradio demo with melody visualization, playback, accompaniment, and MIDI export
 
 ## System Overview
@@ -57,6 +51,24 @@ pip install -r requirements.txt
 
 For GPU training, install a PyTorch build that matches your CUDA environment from
 the official PyTorch instructions before running training.
+
+## Model Weights
+
+The demo can run the rule-based Expert system without neural checkpoints. To enable
+the Synth-Base and Real-FT systems, download or host the following checkpoints:
+
+```text
+_ckpt_synth_base_100k/best.pt
+_ckpt_finetune_100k_mix2to1/best.pt
+```
+
+Recommended hosting layout on Hugging Face:
+
+```text
+https://huggingface.co/spaces/ld04080106/PopMelodyGen-Demo
++-- _ckpt_synth_base_100k/best.pt
++-- _ckpt_finetune_100k_mix2to1/best.pt
+```
 
 ## Generate Synthetic Data
 
@@ -100,9 +112,7 @@ python 03_train_synth_base.py --config configs/train_synth_base_100k.yaml
 Checkpoints are written under the configured `out_dir`; `best.pt` is used by the
 demo as the default Synth-Base checkpoint.
 
-## Launch Demo
-
-Local launch:
+## Launch Demo Locally
 
 ```bash
 python 08_launch_demo.py --base_ckpt _ckpt_synth_base_100k/best.pt --finetune_ckpt _ckpt_finetune_100k_mix2to1/best.pt
@@ -110,14 +120,6 @@ python 08_launch_demo.py --base_ckpt _ckpt_synth_base_100k/best.pt --finetune_ck
 
 Open the printed local URL in a browser. Add `--share` if you want Gradio to create
 a public temporary URL.
-
-For Hugging Face Spaces, `app.py` loads `08_launch_demo.py` and exposes the same
-Gradio app. Upload checkpoints to the expected paths, or set:
-
-```bash
-POPMELODYGEN_BASE_CKPT=/path/to/base/best.pt
-POPMELODYGEN_FINETUNE_CKPT=/path/to/finetune/best.pt
-```
 
 If a checkpoint is missing, the demo still starts and reports the loading error on
 the page; the rule-based Expert system remains available.
@@ -132,8 +134,6 @@ model/           tokenizer, dataset, Transformer, and generation utilities
 utils/           MIDI and accompaniment helpers
 ```
 
-Generated data, checkpoints, evaluation outputs, RWC-derived files, and paper
-working files are ignored by default. See `.gitignore` for the release boundary.
 
 ## License
 

@@ -1,44 +1,51 @@
 # PopMelodyGen
 
-PopMelodyGen is a reproducible system for controllable symbolic pop-melody generation.
-It combines a rule-based expert synthesizer, synthetic-data pretraining, and an
-interactive Gradio demo for melody generation, playback, and MIDI export.
+**A Copyright-Aware Platform for Controllable Pop-Melody Generation**
 
-This GitHub release focuses on the synthetic-data pipeline and demo:
+**Accepted to the AAAI-27 Demonstration Program.**
 
-- `01_generate_synthetic_data.py`: generate synthetic melody MIDI and metadata
-- `02_preprocess_synthetic_data.py`: tokenize synthetic data and create train/eval/test splits
-- `03_train_synth_base.py`: train or resume the synthetic-pretrained Transformer
-- `08_launch_demo.py`: launch the interactive demo with Expert, Synth-Base, and Real-FT systems
+PopMelodyGen is a copyright-aware platform for controllable symbolic pop-melody generation. It combines a rule-based expert synthesizer, synthetic-data pretraining, and adaptation with a small licensed real-pop corpus. The project supports interactive melody creation for **creators** and batch construction of labeled symbolic datasets for **researchers**.
 
-The RWC real-pop processing, finetuning, generation/evaluation scripts, and paper
-experiment utilities are intentionally not part of this initial code release. They
-will be released after paper acceptance.
+- **AAAI-27 demo video:** https://youtu.be/U_R1MEZFOjI
+- **Paper:** *PopMelodyGen: A Copyright-Aware Platform for Controllable Pop-Melody Generation* (AAAI-27 Demonstration Program; proceedings link forthcoming)
+- **Code:** this repository
 
-## Features
+> **Important: this repository is a partial research-code release, not the complete deployed platform.**
+> It currently contains the synthetic-data pipeline, Synth-Base training code, and a **local Python/Gradio demo**. The production web interface described in the AAAI-27 paper uses **Node.js and a backend inference API on a dedicated server**; that production frontend is **not included here**. The paper's Researcher Mode is part of the deployed system, not a documented feature of the Gradio demo in this repository.
 
-- Rule-based symbolic pop-melody synthesis
-- Explicit musical controls: tempo class, key/mode, vocal register, song structure, and chord progression
-- MIDI plus JSON metadata export
-- Event-based tokenizer for symbolic melody modeling
-- Decoder-only Transformer training
-- Interactive Gradio demo with melody visualization, playback, accompaniment, and MIDI export
+## System overview
 
-## System Overview
+The paper describes four connected stages:
 
-```text
-Stage 1: Synthetic melody generation
-musical conditions -> expert synthesizer -> MIDI + metadata
+1. **Expert:** rule-based synthesis of melodies and structured annotations from general musical rules and curated templates.
+2. **Synth-Base:** a decoder-only Transformer pretrained on rule-generated synthetic sequences.
+3. **Real-FT:** the pretrained model adapted with licensed RWC real-pop data and synthetic replay.
+4. **Interactive platform:** model selection, configurable musical conditions, playback, and export in Creator Mode; batch labeled dataset generation in Researcher Mode.
 
-Stage 2: Synthetic preprocessing
-MIDI + metadata -> tokenizer -> event sequences + meta.jsonl
+The synthetic pretraining corpus contains 100,000 examples; the paper reports adaptation using 847 tokenized examples obtained from 98 prepared RWC melodies after preprocessing and augmentation. The RWC corpus and adapted checkpoints are **not bundled with this repository**.
 
-Stage 3: Synthetic pretraining
-event sequences -> decoder-only Transformer -> checkpoint
+## What is publicly available here
 
-Stage 4: Interactive generation
-user controls -> Expert / Synth-Base / Real-FT -> MIDI + playback
-```
+| Component | Current public release |
+| --- | --- |
+| Expert melody synthesizer | Included |
+| Synthetic MIDI + JSON metadata generation | Included |
+| Synthetic preprocessing and tokenization | Included |
+| Synth-Base training | Included |
+| Local Gradio demonstration | Included |
+| RWC processing and Real-FT fine-tuning scripts | Not included in this release |
+| Full paper evaluation and similarity-analysis scripts | Not included in this release |
+| Production Node.js web interface and Researcher Mode | Not included in this repository |
+| Neural model checkpoints | Not bundled; provide separately to enable neural backends |
+
+This table describes the current repository state; it is not a commitment that missing components or data can be released under their respective licenses.
+
+## Features of the local demo
+
+- Select among **Expert**, **Synth-Base** (checkpoint required), and **Real-FT** (checkpoint required).
+- Control tempo class, key/mode, vocal register, song structure, and chord progression.
+- Generate symbolic melodies with accompaniment for audition.
+- Export multi-track MIDI.
 
 ## Installation
 
@@ -48,59 +55,48 @@ Python 3.10 or 3.11 is recommended.
 pip install -r requirements.txt
 ```
 
-For GPU training, install a PyTorch build that matches your CUDA environment from
-the official PyTorch instructions before running training.
+For GPU training, install a PyTorch build compatible with your CUDA environment before running the training script.
 
-## Model Weights
+## Model checkpoints
 
-The demo can run the rule-based Expert system without neural checkpoints. To enable
-the Synth-Base and Real-FT systems, download or host the following checkpoints:
+The local demo can run **Expert** without a neural checkpoint. To use the two neural backends, supply compatible checkpoints at the following default paths, or override them using the CLI flags below:
 
 ```text
 _ckpt_synth_base_100k/best.pt
 _ckpt_finetune_100k_mix2to1/best.pt
 ```
 
-Recommended hosting layout on Hugging Face:
+These paths are configuration conventions, **not download links**. Model availability and redistribution terms must be checked separately.
 
-```text
-https://huggingface.co/spaces/ld04080106/PopMelodyGen-Demo
-+-- _ckpt_synth_base_100k/best.pt
-+-- _ckpt_finetune_100k_mix2to1/best.pt
-```
+## Generate synthetic data
 
-## Generate Synthetic Data
-
-Generate one tempo class (slow/mid/fast):
+Generate one tempo class (slow, mid, or fast):
 
 ```bash
 python 01_generate_synthetic_data.py --config configs/expert_mid.yaml
 ```
 
-Generate all tempo classes in one run:
+Generate all three tempo classes:
 
 ```bash
 python 01_generate_synthetic_data.py --config_dir configs --tempos SLOW MID FAST
 ```
 
-By default, generated files are written to `_data_synth/`. Each sample contains a
-`.mid` file and a matching `.json` metadata file.
+Generated files are written to `_data_synth/` by default, with a `.mid` and matching `.json` file for each example.
 
-## Preprocess Synthetic Data
+## Preprocess synthetic data
 
 ```bash
 python 02_preprocess_synthetic_data.py --in_dir _data_synth --out_dir _preprocessed_synth
 ```
 
-The script tokenizes each MIDI/metadata pair and writes:
+The script writes tokenized examples and metadata, including:
 
 - `_preprocessed_synth/meta.jsonl`
-- one `.npy` token-id file per sample
-- one `.txt` token dump per sample
+- A `.npy` token-ID file and a `.txt` token dump per sample
 - `_preprocessed_synth/preprocess_report.json`
 
-The train/eval/test split is computed independently within each tempo class, so
-SLOW, MID, and FAST are all represented in each split when enough samples exist.
+Train/evaluation/test splits are computed within each tempo class when enough examples are available.
 
 ## Train Synth-Base
 
@@ -108,32 +104,36 @@ SLOW, MID, and FAST are all represented in each split when enough samples exist.
 python 03_train_synth_base.py --config configs/train_synth_base_100k.yaml
 ```
 
-Checkpoints are written under the configured `out_dir`; `best.pt` is used by the
-demo as the default Synth-Base checkpoint.
+Checkpoints are written to the configured output directory. The default local demo expects the compatible `best.pt` checkpoint.
 
-## Launch Demo Locally
+## Launch the local Gradio demo
 
 ```bash
 python 08_launch_demo.py --base_ckpt _ckpt_synth_base_100k/best.pt --finetune_ckpt _ckpt_finetune_100k_mix2to1/best.pt
 ```
 
-Open the printed local URL in a browser. Add `--share` if you want Gradio to create
-a public temporary URL.
+Open the locally printed URL. Optionally supply `--share` to request a temporary Gradio share URL. If a checkpoint is missing, its neural backend will be unavailable; Expert can still run.
 
-If a checkpoint is missing, the demo still starts and reports the loading error on
-the page; the rule-based Expert system remains available.
-
-## Repository Layout
+## Repository layout
 
 ```text
-configs/         YAML configs for synthesis and training
-expert_melody/   rule-based melody synthesizer
-expert_acc/      lightweight accompaniment generator
-model/           tokenizer, dataset, Transformer, and generation utilities
-utils/           MIDI and accompaniment helpers
+01_generate_synthetic_data.py     Generate rule-based synthetic MIDI and metadata
+02_preprocess_synthetic_data.py  Tokenize data and prepare splits
+03_train_synth_base.py           Train Synth-Base
+08_launch_demo.py                Launch the local Gradio demo
+configs/                         Configuration files
+expert_melody/                   Expert melody synthesizer
+expert_acc/                      Accompaniment generator
+model/                           Tokenizer, dataset, neural modeling, and generation utilities
+utils/                           MIDI and accompaniment helpers
 ```
 
+## Copyright-aware design and data licensing
+
+The expert synthesizer constructs melodies from general musical rules and element-level templates rather than transforming existing pop melodies. The Real-FT training stage described in the paper uses licensed RWC data; the 2026 RWC release is distributed under **CC BY-NC 4.0**. The RWC data are not redistributed in this repository.
+
+**Copyright-aware does not mean legally copyright-safe.** Generated music may require additional review before redistribution or commercial use. The paper's nearest-neighbor analysis checks for possible near-copy risks against the selected RWC reference set; it is not a legal guarantee.
 
 ## License
 
-MIT License. See `LICENSE`.
+The **repository code** is released under the [MIT License](LICENSE). This does **not** grant rights to third-party datasets, separately distributed model weights, or generated outputs beyond applicable licenses and law.
